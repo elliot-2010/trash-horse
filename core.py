@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 import tensorflow as tf
 from threading import Thread
-from time import sleep
+from time import sleep, perf_counter
 from queue import Queue
 
 
@@ -18,7 +18,6 @@ from queue import Queue
 #the queue is a way for both functions to communicate
 
 predictions = Queue()
-
 
 
 
@@ -57,50 +56,58 @@ def maincore(model, cameranumber):
         print("Camera not found!")
         exit()
 
+    last_prediction = perf_counter()
+
+    class_lists = ["NTO", "Metal", "Plastic"]
+
+
     while True:
+        start_time = perf_counter()
         ret, frame = camera.read()
 
         if not ret:
             print("Cannot read camera!")
             break
 
-        #frame optimization        
-        frame_transformed_into_RGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frame_resized = cv2.resize(frame_transformed_into_RGB, (width, height))
-        #فقط خدا میدونه اینجا داره چی میشه
-        #adding the missing dimention (number of images [missing, 244, 244, 3])
-        image = np.expand_dims(frame_resized, axis=0)
-        #changes the pixel values in order to be able to be understood by TRASH_HORSE
-        #from each pixel having from 0 to 255 as its value to each being beetwen -1 and 1
-        image = image.astype(np.float32) / 127.5 - 1.0
-        #other optimizations for quantization
-        image = np.round(image / input_scale + input_zero)
-        image = np.clip(image, 0, 255).astype(np.uint8)
+        current_time = perf_counter()
 
 
 
+        if current_time - last_prediction >= 0.5:
 
-        #giving TRASH HORSE the picture source
-        interpreter.set_tensor(input_index, image)
-        interpreter.invoke()
-        prediction = interpreter.get_tensor(output_index)
-        prediction = (prediction.astype(np.float32) - output_zero) * output_scale
+            # Update timer BEFORE inference
+            last_prediction = current_time
+
+            # Image processing
+            frame_transformed_into_RGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame_resized = cv2.resize(frame_transformed_into_RGB, (width, height))
+
+            image = np.expand_dims(frame_resized, axis=0)
+            image = image.astype(np.float32) / 127.5 - 1.0
+            image = np.round(image / input_scale + input_zero)
+            image = np.clip(image, 0, 255).astype(np.uint8)
+
+            # waking up the ai
+            interpreter.set_tensor(input_index, image)
+            interpreter.invoke()
+
+            prediction = interpreter.get_tensor(output_index)
+            prediction = (prediction.astype(np.float32) - output_zero) * output_scale
+            prediction_highest = np.argmax(prediction[0])
+
+            # Send prediction to queue
+            predictions.put(class_lists[prediction_highest])
+
+
+
         
-        prediction_highest = np.argmax(prediction[0])
-
-        class_lists = ["NTO", "Metal", "Plastic"]
-
-        predictions.put(class_lists[prediction_highest])
-
-        sleep(0.5)
-
-
-        
-        cv2.imshow("TRASH HORSE - Technology for Recycling and Automated Separation of Household waste Horse", frame_resized)
+        cv2.imshow("TRASH HORSE - Technology for Recycling and Automated Separation of Household waste Horse", frame)
 
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+
+        print("Loop duration:", perf_counter() - start_time)
         
 
     camera.release()
@@ -111,7 +118,6 @@ def output():
     current_list = []
 
     while True:
-        sleep(0.5)
         output_prediction = predictions.get()
         current_list.append(output_prediction)
         if len(current_list) == 4:
@@ -129,7 +135,7 @@ def output():
 
 
 
-maincore_thread = Thread(target=maincore, args=("model.tflite", 0))
+maincore_thread = Thread(target=maincore, args=("model.tflite", 1))
 output_thread =  Thread(target=output)
 maincore_thread.start()
 output_thread.start()
