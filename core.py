@@ -87,6 +87,7 @@ def maincore(model, cameranumber):
 
         predictions.put(class_lists[prediction_highest])
 
+        sleep(0.5)
 
 
         
@@ -105,10 +106,18 @@ def output():
     current_list = []
 
     while True:
-        sleep(0.5)
         output_prediction = predictions.get()
         current_list.append(output_prediction)
         print(current_list)
+        if len(current_list) == 4:
+            if current_list[0] == current_list[1] and current_list[1] == current_list[2] and current_list[2] == current_list[3]:
+                print(current_list)
+                current_list = []
+            else:
+                current_list = []
+        else:
+            pass
+
 
 
 maincore_thread = Thread(target=maincore, args=("model.tflite", 0))
