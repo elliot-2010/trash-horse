@@ -111,13 +111,14 @@ def output():
     current_list = []
 
     while True:
+        sleep(0.5)
         output_prediction = predictions.get()
         current_list.append(output_prediction)
         if len(current_list) == 4:
             if current_list[0] == current_list[1] and current_list[1] == current_list[2] and current_list[2] == current_list[3]:
                 global final_output
 
-                final_output = current_list[1]
+                final_output = current_list[0]
 
                 print(final_output)
                 current_list = []
