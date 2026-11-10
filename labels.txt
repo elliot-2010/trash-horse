@@ -1,0 +1,3 @@
+0 Non-Trashable-Objects
+1 Metal
+2 Plastic
