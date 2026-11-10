@@ -106,8 +106,6 @@ def maincore(model, cameranumber):
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-
-        print("Loop duration:", perf_counter() - start_time)
         
 
     camera.release()
@@ -130,8 +128,6 @@ def output():
                 current_list = []
             else:
                 current_list = []
-        else:
-            pass
 
 
 
