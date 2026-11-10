@@ -101,19 +101,14 @@ def maincore(model, cameranumber):
     cv2.destroyAllWindows()
     
 def output():
+    pass
     current_list = []
 
     while True:
         sleep(0.5)
-        print(f"------- {predictions} -------")
-        # if current_list.length() == 4:
-        #     if current_list[0] == current_list[1] == current_list[2] == current_list[3]:
-        #         return current_list[0]
-        #     else:
-        #         current_list = []
-        # else:
-        #     pass
-
+        output_prediction = predictions.get()
+        current_list.append(output_prediction)
+        print(current_list)
 
 
 maincore_thread = Thread(target=maincore, args=("model.tflite", 0))
