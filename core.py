@@ -19,6 +19,11 @@ from queue import Queue
 
 predictions = Queue()
 
+
+
+
+
+
 def maincore(model, cameranumber):
     #Loading AI model
     interpreter = tf.lite.Interpreter(
@@ -108,10 +113,13 @@ def output():
     while True:
         output_prediction = predictions.get()
         current_list.append(output_prediction)
-        print(current_list)
         if len(current_list) == 4:
             if current_list[0] == current_list[1] and current_list[1] == current_list[2] and current_list[2] == current_list[3]:
-                print(current_list)
+                global final_output
+
+                final_output = current_list[1]
+
+                print(final_output)
                 current_list = []
             else:
                 current_list = []
