@@ -58,7 +58,7 @@ def maincore(model, cameranumber):
 
     last_prediction = perf_counter()
 
-    class_lists = ["NTO", "Metal", "Plastic"]
+    class_lists = ["NTO", "Metal", "Plastic", "Paper", "Glass"]
 
 
     while True:

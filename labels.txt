@@ -1,3 +1,5 @@
 0 Non-Trashable-Objects
 1 Metal
 2 Plastic
+3 Paper
+4 Glass
