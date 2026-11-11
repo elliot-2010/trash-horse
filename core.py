@@ -124,7 +124,6 @@ def output():
 
                 final_output = current_list[0]
 
-                print(final_output)
                 current_list = []
             else:
                 current_list = []
@@ -132,21 +131,23 @@ def output():
 
 
 def servo_control():
+    Servo_MPl = Servo(18)
+    Servo_GPa = Servo(19)
     sleep(2)
     if final_output == "Metal":
-        pass
+        print(final_output)
 
     elif final_output == "Plastic":
-        pass
+        print(final_output)
 
     elif final_output == "Paper":
-        pass
+        print(final_output)
 
     elif final_output == "Glass":
-        pass
+        print(final_output)
 
     else:
-        pass
+        print(final_output)
 
 #creating threads
 servo_control_thread = Thread(target=servo_control)
