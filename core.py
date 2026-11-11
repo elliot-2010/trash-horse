@@ -10,7 +10,7 @@ import tensorflow as tf
 from threading import Thread
 from time import sleep, perf_counter
 from queue import Queue
-
+from gpiozero import Servo
 
 
 
@@ -130,12 +130,15 @@ def output():
                 current_list = []
 
 def servo_control():
-    pass
+    sleep(2)
+    if
 
 
-
+#creating threads
 servo_control_thread = Thread(target=servo_control)
 maincore_thread = Thread(target=maincore, args=("model.tflite", 1))
 output_thread =  Thread(target=output)
+#starting threads
 maincore_thread.start()
 output_thread.start()
+servo_control_thread.start()
