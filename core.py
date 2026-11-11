@@ -129,8 +129,12 @@ def output():
             else:
                 current_list = []
 
+def servo_control():
+    pass
 
 
+
+servo_control_thread = Thread(target=servo_control)
 maincore_thread = Thread(target=maincore, args=("model.tflite", 1))
 output_thread =  Thread(target=output)
 maincore_thread.start()
