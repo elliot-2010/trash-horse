@@ -108,7 +108,9 @@ def maincore(model, cameranumber):
 
     camera.release()
     cv2.destroyAllWindows()
-    
+
+
+
 def output():
     pass
     current_list = []
@@ -126,6 +128,8 @@ def output():
                 current_list = []
             else:
                 current_list = []
+
+
 
 def servo_control():
     sleep(2)
