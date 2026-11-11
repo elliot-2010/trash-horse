@@ -17,6 +17,7 @@ from gpiozero import Servo
 #making a queue
 #the queue is a way for both functions to communicate
 predictions = Queue()
+confirmed_predictions = Queue()
 
 
 
@@ -120,9 +121,8 @@ def output():
         current_list.append(output_prediction)
         if len(current_list) == 4:
             if current_list[0] == current_list[1] and current_list[1] == current_list[2] and current_list[2] == current_list[3]:
-                global final_output
 
-                final_output = current_list[0]
+                confirmed_predictions.put(current_list[0])
 
                 current_list = []
             else:
@@ -131,23 +131,24 @@ def output():
 
 
 def servo_control():
-    Servo_MPl = Servo(18)
-    Servo_GPa = Servo(19)
-    sleep(2)
-    if final_output == "Metal":
-        print(final_output)
+    while True:
+        final_output = confirmed_predictions.get()
+        # Servo_MPl = Servo(18)
+        # Servo_GPa = Servo(19)
+        if final_output == "Metal":
+            print(f"m {final_output}")
 
-    elif final_output == "Plastic":
-        print(final_output)
+        elif final_output == "Plastic":
+            print(f"pl {final_output}")
 
-    elif final_output == "Paper":
-        print(final_output)
+        elif final_output == "Paper":
+            print(f"pa {final_output}")
 
-    elif final_output == "Glass":
-        print(final_output)
+        elif final_output == "Glass":
+            print(f"g {final_output}")
 
-    else:
-        print(final_output)
+        else:
+            print(f"n {final_output}")
 
 #creating threads
 servo_control_thread = Thread(target=servo_control)
