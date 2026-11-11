@@ -16,7 +16,6 @@ from gpiozero import Servo
 
 #making a queue
 #the queue is a way for both functions to communicate
-
 predictions = Queue()
 
 
@@ -62,7 +61,6 @@ def maincore(model, cameranumber):
 
 
     while True:
-        start_time = perf_counter()
         ret, frame = camera.read()
 
         if not ret:
@@ -131,8 +129,20 @@ def output():
 
 def servo_control():
     sleep(2)
-    if
+    if final_output == "Metal":
+        pass
 
+    elif final_output == "Plastic":
+        pass
+
+    elif final_output == "Paper":
+        pass
+
+    elif final_output == "Glass":
+        pass
+
+    else:
+        pass
 
 #creating threads
 servo_control_thread = Thread(target=servo_control)
