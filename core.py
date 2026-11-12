@@ -7,17 +7,10 @@
 import cv2
 import numpy as np
 import tensorflow as tf
-from threading import Thread
 from time import sleep, perf_counter
-from queue import Queue
 from gpiozero import Servo
 
 
-
-#making a queue
-#the queue is a way for both functions to communicate
-predictions = Queue()
-confirmed_predictions = Queue()
 
 
 
@@ -60,6 +53,8 @@ def maincore(model, cameranumber):
 
     class_lists = ["NTO", "Metal", "Plastic", "Paper", "Glass"]
 
+    current_list = []
+
 
     while True:
         ret, frame = camera.read()
@@ -94,13 +89,40 @@ def maincore(model, cameranumber):
             prediction = (prediction.astype(np.float32) - output_zero) * output_scale
             prediction_highest = np.argmax(prediction[0])
 
-            # Send prediction to queue
-            predictions.put(class_lists[prediction_highest])
+            output_prediction = class_lists[prediction_highest]
+            current_list.append(output_prediction)
+
+            #----------------------------------------------------
+            #محمدرضا اینجا رو زیر هر ایف و الیف ادیت کن
+            #----------------------------------------------------
+            if len(current_list) == 4:
+
+                if all(item == current_list[0] for item in current_list):
+
+                    final_output = current_list[0]
+
+                    if final_output == "Metal":
+                        print(f"m {final_output}")
+
+                    elif final_output == "Plastic":
+                        print(f"pl {final_output}")
+
+                    elif final_output == "Paper":
+                        print(f"pa {final_output}")
+
+                    elif final_output == "Glass":
+                        print(f"g {final_output}")
+
+                    else:
+                        print(f"n {final_output}")
+
+
+                current_list = []
 
 
 
-        
-        cv2.imshow("TRASH HORSE - Technology for Recycling and Automated Separation of Household waste Horse", frame)
+        #محظ ران کردن رو رزبری بدون گویی اینجا رو فعلا کامنت کردم
+        # cv2.imshow("TRASH HORSE - Technology for Recycling and Automated Separation of Household waste Horse", frame)
 
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -112,49 +134,8 @@ def maincore(model, cameranumber):
 
 
 
-def output():
-    pass
-    current_list = []
-
-    while True:
-        output_prediction = predictions.get()
-        current_list.append(output_prediction)
-        if len(current_list) == 4:
-            if current_list[0] == current_list[1] and current_list[1] == current_list[2] and current_list[2] == current_list[3]:
-
-                confirmed_predictions.put(current_list[0])
-
-                current_list = []
-            else:
-                current_list = []
 
 
 
-def servo_control():
-    while True:
-        final_output = confirmed_predictions.get()
-        # Servo_MPl = Servo(18)
-        # Servo_GPa = Servo(19)
-        if final_output == "Metal":
-            print(f"m {final_output}")
 
-        elif final_output == "Plastic":
-            print(f"pl {final_output}")
-
-        elif final_output == "Paper":
-            print(f"pa {final_output}")
-
-        elif final_output == "Glass":
-            print(f"g {final_output}")
-
-        else:
-            print(f"n {final_output}")
-
-#creating threads
-servo_control_thread = Thread(target=servo_control)
-maincore_thread = Thread(target=maincore, args=("model.tflite", 1))
-output_thread =  Thread(target=output)
-#starting threads
-maincore_thread.start()
-output_thread.start()
-servo_control_thread.start()
+maincore("model.tflite", 1)
