@@ -14,18 +14,14 @@ from time import sleep, perf_counter
 from gpiozero import AngularServo
 from gpiozero.pins.pigpio import PiGPIOFactory
 
-# ----------------------------------------------------
-# SERVO CONTROL FUNCTION
-# ----------------------------------------------------
+
+
 def servo_control(servo, angle):
     servo.angle = angle
     sleep(2)
     servo.angle = 90
     sleep(2)
 
-# ----------------------------------------------------
-# MAIN PROGRAM
-# ----------------------------------------------------
 def maincore(model, cameranumber):
     factory = PiGPIOFactory()
     servo_MG = AngularServo(
@@ -49,9 +45,7 @@ def maincore(model, cameranumber):
     sleep(3)
     servo_PlPa.angle = 90
     sleep(3)
-    # ------------------------------------------------
-    # LOAD AI MODEL
-    # ------------------------------------------------
+   
     interpreter = tf.lite.Interpreter(
         model_path=model
     )
@@ -66,9 +60,7 @@ def maincore(model, cameranumber):
     # Quantization
     input_scale, input_zero = input_details[0]["quantization"]
     output_scale, output_zero = output_details[0]["quantization"]
-    # ------------------------------------------------
-    # IMAGE PROCESSING
-    # ------------------------------------------------
+
     camera = cv2.VideoCapture(cameranumber)
     if not camera.isOpened():
         print("Camera not found!")
@@ -124,15 +116,10 @@ def maincore(model, cameranumber):
                 prediction_highest = np.argmax(prediction[0])
                 output_prediction = class_lists[prediction_highest]
                 current_list.append(output_prediction)
-                # ----------------------------------------
-                # PREDICTION STABILIZATION
-                # ----------------------------------------
+
                 if len(current_list) == 4:
                     if all(item == current_list[0] for item in current_list):
                         final_output = current_list[0]
-                        # --------------------------------
-                        # SERVO CONTROL
-                        # --------------------------------
                         if final_output == "Metal":
                             print(f"m {final_output}")
                             servo_control(servo_MG, 0)
@@ -152,16 +139,11 @@ def maincore(model, cameranumber):
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
     finally:
-        # --------------------------------------------
-        # CLEANUP
-        # --------------------------------------------
         camera.release()
         cv2.destroyAllWindows()
         servo_MG.close()
         servo_PlPa.close()
         factory.close()
 
-# ----------------------------------------------------
-# RUN PROGRAM
-# ----------------------------------------------------
+
 maincore("model.tflite", 0)

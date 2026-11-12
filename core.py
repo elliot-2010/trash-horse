@@ -4,6 +4,11 @@
 #TRASH HORSE stands for "Technology for Recycling and Automated Separation of Household waste Horse"
 
 
+#this is the final code made by Ilia bakhshayesh before being imporved by gpt
+
+
+
+
 import cv2
 import numpy as np
 import tensorflow as tf
