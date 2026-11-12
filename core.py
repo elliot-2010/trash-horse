@@ -8,15 +8,38 @@ import cv2
 import numpy as np
 import tensorflow as tf
 from time import sleep, perf_counter
-from gpiozero import Servo
-
-
-
-
+from gpiozero import AngularServo
+from gpiozero.pins.pigpio import PiGPIOFactory
+from time import sleep
 
 
 
 def maincore(model, cameranumber):
+    
+    factory = PiGPIOFactory()
+
+    servo_MG = AngularServo(
+        18,
+        min_angle=0,
+        max_angle=180,
+        min_pulse_width=0.0005,
+        max_pulse_width=0.0025,
+        pin_factory = factory
+    )
+
+    servo_PlPa = AngularServo(
+        19,
+        min_angle=0,
+        max_angle=180,
+        min_pulse_width=0.0005,
+        max_pulse_width=0.0025,
+        pin_factory = factory
+    )
+    sleep(3)
+    servo_MG.angle = 90
+    sleep(3)
+    servo_PlPa.angle = 90
+    sleep(3)
     #Loading AI model
     interpreter = tf.lite.Interpreter(
         model_path=model
@@ -100,13 +123,15 @@ def maincore(model, cameranumber):
                 if all(item == current_list[0] for item in current_list):
 
                     final_output = current_list[0]
-
                     if final_output == "Metal":
                         print(f"m {final_output}")
-
+                        sleep(2)
+                        servo_MG.angle = 0
+                        sleep(2)
+                        servo_MG.angle = 90
+                        sleep(2)
                     elif final_output == "Plastic":
                         print(f"pl {final_output}")
-
                     elif final_output == "Paper":
                         print(f"pa {final_output}")
 
@@ -138,4 +163,4 @@ def maincore(model, cameranumber):
 
 
 
-maincore("model.tflite", 1)
+maincore("model.tflite", 0)
