@@ -682,8 +682,8 @@ Primary responsibilities:
 -   GPIO configuration.
 -   Servo motor control and testing.
 -   Electronic connections and hardware integration.
--   Communication between software and physical components. \## 10.2
-    Ilia Bakhshayesh
+-   Communication between software and physical components. \
+## 10.2 Ilia Bakhshayesh
 
 Primary responsibilities:
 
