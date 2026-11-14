@@ -678,7 +678,6 @@ Primary responsibilities:
 
 -   Raspberry Pi configuration and setup.
 -   Linux operating system and environment management.
--   Python application development and integration.
 -   GPIO configuration.
 -   Servo motor control and testing.
 -   Electronic connections and hardware integration.
@@ -687,6 +686,7 @@ Primary responsibilities:
 
 Primary responsibilities:
 
+-   Python application development and integration.
 -   Machine learning model development.
 -   Training the TRASH HORSE classification model.
 -   Image processing implementation.
