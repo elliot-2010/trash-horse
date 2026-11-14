@@ -676,6 +676,7 @@ different technical areas of the system.
 
 Primary responsibilities:
 
+- Python application integration.
 -   Raspberry Pi configuration and setup.
 -   Linux operating system and environment management.
 -   GPIO configuration.
@@ -686,7 +687,7 @@ Primary responsibilities:
 
 Primary responsibilities:
 
--   Python application development and integration.
+-   Python application development.
 -   Machine learning model development.
 -   Training the TRASH HORSE classification model.
 -   Image processing implementation.
