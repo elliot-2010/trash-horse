@@ -140,7 +140,6 @@ Make sure the required GPIO backend is available and configured before running t
 
 **Mohammadreza Kermani**
 - Raspberry Pi and Linux configuration
-- Python application integration
 - GPIO and servo control
 - Electronics and hardware integration
 
@@ -149,6 +148,7 @@ Make sure the required GPIO backend is available and configured before running t
 - Model training
 - Image processing
 - Classification implementation
+- Python application development and integration
 
 Both contributors worked on the overall system integration.
 
